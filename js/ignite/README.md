@@ -2,6 +2,11 @@
 
 Ignite is a go package that is dependent on the gopherjs project.  Ignite allows you to easily mark up your html DOM elements with class and data attributes to bind either one way or two way updates to your go structs.  
 
+##Installation
+
+	go get -u github.com/gopherjs/gopherjs
+	go get github.com/cloud-ignite/go/js/ignite
+
 ##Design
 Ignite is based on a virtual dom design.  The virtual dom implements an observer pattern on golang objects and uses reflection to access and update the objects.  
 
@@ -35,3 +40,9 @@ The following binding types are supported.
 ###Binding Types
 
 	data-bind-innerhtml  :  Sets the innerhtml of the element
+	
+###Examples
+
+See example directory.
+	
+

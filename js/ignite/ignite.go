@@ -2,7 +2,7 @@
 package ignite
 
 import (
-	// "fmt"
+	"fmt"
 	"honnef.co/go/js/dom"
 	"reflect"
 	"strconv"
@@ -48,39 +48,6 @@ func (self *VirtualDom) AddObservable(object Observable) {
 	self.M.Unlock()
 
 	object.AddObserver(self.handleObservableCallback)
-}
-
-func (self *VirtualDom) handleObservableCallback(key string) {
-
-	//First Get the Object observed to change
-	obj := self.ObservableObjects[key]
-
-	if obj == nil {
-		return
-	}
-
-	//Do this concurrently
-
-	for _, binding := range self.Bindings {
-		attribute, ok := binding.Attributes[key]
-		if ok {
-			for key, value := range attribute.Keys {
-
-				// fmt.Println("printing the Property")
-				// fmt.Printf("%v\n", value)
-
-				//Use Reflection to get the value of the obj
-				propertyValue := getReflectionValue(value, obj)
-
-				switch key {
-				case VIRTUAL_DOM_INNERHTML:
-					binding.Element.SetInnerHTML(propertyValue)
-					break
-				}
-			}
-		}
-	}
-
 }
 
 func (self *VirtualDom) BindDocument(document dom.Document) error {
@@ -129,9 +96,51 @@ func (self *VirtualDom) BindDocument(document dom.Document) error {
 
 	}
 
+	//Loop through the observable elemements and bind.
+
+	for _, obj := range self.ObservableObjects {
+		self.bindDOM(obj.Key())
+	}
 	// fmt.Printf("%v\n", self.Bindings[0].Attributes)
 
 	return nil
+}
+
+func (self *VirtualDom) handleObservableCallback(key string) {
+	self.bindDOM(key)
+}
+
+func (self *VirtualDom) bindDOM(key string) {
+
+	fmt.Println("BindingDom")
+	//First Get the Object observed to change
+	obj := self.ObservableObjects[key]
+
+	if obj == nil {
+		return
+	}
+
+	//Do this concurrently
+
+	for _, binding := range self.Bindings {
+		attribute, ok := binding.Attributes[key]
+		if ok {
+			for key, value := range attribute.Keys {
+
+				// fmt.Println("printing the Property")
+				// fmt.Printf("%v\n", value)
+
+				//Use Reflection to get the value of the obj
+				propertyValue := getReflectionValue(value, obj)
+
+				switch key {
+				case VIRTUAL_DOM_INNERHTML:
+					binding.Element.SetInnerHTML(propertyValue)
+					break
+				}
+			}
+		}
+	}
 }
 
 func getReflectionValue(key string, x interface{}) string {

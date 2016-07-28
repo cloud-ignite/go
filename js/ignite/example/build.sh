@@ -1,0 +1,1 @@
+gopherjs build -m app.go
