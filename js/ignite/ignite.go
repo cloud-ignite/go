@@ -87,7 +87,7 @@ func (self *VirtualDom) BindDocument(document dom.Document) error {
 
 	//Do this concurrently
 
-	for _, element := range document.GetElementsByClassName("gopherjs") {
+	for _, element := range document.GetElementsByClassName("ignite") {
 
 		var b Binding
 		b.Element = element
