@@ -53,8 +53,10 @@ func onload(ev dom.Event) {
 	vDom.BindDocument(document)
 
 	go func() {
-		time.Sleep(3000 * time.Millisecond)
-		menu.Home.Title = "A New String"
-		menu.Commit()
+		for {
+			time.Sleep(30 * time.Millisecond)
+			menu.Home.Title = time.Now().String()
+			menu.Commit()
+		}
 	}()
 }
