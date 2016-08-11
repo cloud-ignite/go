@@ -2,6 +2,7 @@
 package ajax
 
 import (
+	"bytes"
 	"encoding/json"
 	"io/ioutil"
 	"net/http"
@@ -18,9 +19,20 @@ func GetJSON(url string, v interface{}) error {
 		return err
 	}
 
-	json.NewDecoder(resp.Body).Decode(&v)
+	return json.NewDecoder(resp.Body).Decode(&v)
+}
 
-	return nil
+func PostJSON(url string, data []byte, v interface{}) error {
+	client := &http.Client{}
+
+	resp, err := client.Post(url, "application/json", bytes.NewBuffer(data))
+	defer resp.Body.Close()
+
+	if err != nil {
+		return err
+	}
+
+	return json.NewDecoder(resp.Body).Decode(&v)
 }
 
 func GetHTML(url string) (string, error) {
